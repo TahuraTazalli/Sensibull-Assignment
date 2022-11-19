@@ -15,7 +15,6 @@ const DetailsListings = () => {
     dispatch(fetchInstrumentsDetails());
     dispatch(removSelectedDetails());
   }, []);
-  // console.log("DetailsListings:", details);
   return (
     <div>
       <StockComponent />

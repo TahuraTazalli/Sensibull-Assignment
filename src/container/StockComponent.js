@@ -1,18 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useSelector } from "react-redux";
-// import { Routes, Route, useNavigate } from "react-router-dom";
-
 import { Link } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -35,7 +32,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 const StockComponent = () => {
-  const [update, setUpdate] = useState("");
+  const [data, setData] = useState([]);
+
   // const navigate = useNavigate();
   const details = useSelector((state) => {
     console.log("stateee", state);
@@ -66,14 +64,20 @@ const StockComponent = () => {
       })
       .filter((details) => details !== undefined);
   console.log("arrangearrange", arrange);
+
+  useEffect(() => {
+    setData(arrange?.length && arrange);
+  }, [details]);
+
   const onChangeAutocomplete = (event, newValue) => {
-    event.preventDefault();
-    setUpdate(arrange.Symbol);
-    // navigate("/quotes/:symbol");
+    console.log("newValuenewValue", data);
+    const newData =
+      data?.length && data.filter((detail) => detail.Symbol == newValue);
+    setData(newData);
   };
+
   const clickEventHandler = (detail) => {
     console.log("Detailss", detail);
-    // const { Symbol } = detail;
   };
   const abc = () => {};
   return (
@@ -81,15 +85,10 @@ const StockComponent = () => {
       <Autocomplete
         id="free-solo-demo"
         freeSolo
-        options={arrange}
+        options={arrange?.length && arrange.map((option) => option.Symbol)}
+        onChange={onChangeAutocomplete}
         sx={{ width: 300 }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            onChange={onChangeAutocomplete}
-            label="Search"
-          />
-        )}
+        renderInput={(params) => <TextField {...params} label="Search" />}
       />
       <div>
         <TableContainer component={Paper}>
@@ -103,8 +102,8 @@ const StockComponent = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {arrange?.length &&
-                arrange.map((detail) => (
+              {data?.length &&
+                data.map((detail) => (
                   <StyledTableRow key={detail.name}>
                     <StyledTableCell
                       align="right"
@@ -131,9 +130,5 @@ const StockComponent = () => {
       </div>
     </>
   );
-
-  // console.log("StockComponent:", renderLists);
-
-  // return <>{renderLists}</>;
 };
 export default StockComponent;
